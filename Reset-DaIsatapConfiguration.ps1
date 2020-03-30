@@ -17,11 +17,11 @@
 .NOTES
     Version:        1.1
     Creation Date:  December 2, 2019
-    Last Updated:   January 31, 2020
+    Last Updated:   March 30, 2020
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
-    Web Site:       www.richardhicks.com
+    Web Site:       https://directaccess.richardhicks.com/
 
 #>
 
@@ -49,13 +49,11 @@ New-NetRoute -AddressFamily IPv6 -DestinationPrefix $InternalIPv6Prefix -Interfa
 Write-Verbose 'Enabling forwarding and advertising on the internal ISATAP network interface...'
 Set-NetIPInterface -InterfaceIndex $IsatapInterfaceIndex -Forwarding Enabled -Advertising Enabled
 
-Write-Verbose 'Done.'
-
 # SIG # Begin signature block
 # MIINbAYJKoZIhvcNAQcCoIINXTCCDVkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUT5pKYddvdSZ+O8xStk4dSWud
-# XZmgggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUVJensg3RB54wE4ld/6ixd3Ks
+# hQOgggquMIIFMDCCBBigAwIBAgIQBAkYG1/Vu2Z1U0O1b5VQCDANBgkqhkiG9w0B
 # AQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMTMxMDIyMTIwMDAwWhcNMjgxMDIyMTIwMDAwWjByMQsw
@@ -117,11 +115,11 @@ Write-Verbose 'Done.'
 # Z2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0ECEAzkyhDXGglH
 # uQrfNWNuXYgwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFCSYQo8dymtm3MbRw7+WDYivwb/0MA0G
-# CSqGSIb3DQEBAQUABIIBAGDwLLq92b/DRS56+D4xr66KgXl5lwof6xeLdXmG3iNP
-# bfXAnAXe6QqhqbyiAL6EL40MM91eYe2HdKkUmvieOXEVyu6Ps7zrJnE2oxLmZtzv
-# OaBifUfLU+NhRMMm9V6An8OUQbC576ulAIn4s3ujokV3FEAOLrnzrJTIEKeaa9Z5
-# hiiwYHU5yEJecmdD5CoYd95B+1k6wFJDUzIv7pJFAFvOP2NQiqoKhduM61YWqpLK
-# 7u8SLheMikhYBLeAobZKwGFf9olTWdkrEoPMxseUN2BNTeP7bU6qbKoXy9QqZKVX
-# oIpqKGWyHYclGirrCPMYoVccsONEObb3FYQXs3LPbnA=
+# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFM+Nix6GQGyJy3EPVMvsw1CsrrniMA0G
+# CSqGSIb3DQEBAQUABIIBAIyTmLLRUlqNEkpeTyNIr1yRpIOMuk8zenwL9LoqjBpW
+# N3T8Cjaad5SrIVBqAcHvkMBFMoZUt4OOG+/iq6/u5RmjcXiZJwS01F7bI9kLOwJR
+# mFR+VWWO+nTUQTBKROKB3HP6pHaXxb/FDIn8JSPdDXZzxTeTAojv0i8ITyyNJ50Q
+# Jtbm12SHrCz9lpHVfTFFSont/3C0ocacbtMQQceslJefYP4t90+joySynpaoWkdg
+# Zkn59+/ac/kvYNSfTX9o78fgZLkWzXBCM4zpT25SvaD3K2bdRtmdofAx1FMiCHzA
+# 6UTn6G9Ur9tek/iwNT0uv66v0VRRnXFS4DANCzlYudw=
 # SIG # End signature block
