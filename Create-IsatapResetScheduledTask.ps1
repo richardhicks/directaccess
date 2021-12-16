@@ -27,9 +27,9 @@
     https://github.com/richardhicks/directaccess/blob/master/Reset-DaIsatapConfiguration.ps1
 
 .NOTES
-    Version:        1.22
+    Version:        1.23
     Creation Date:  September 30, 2020
-    Last Updated:   December 14, 2021
+    Last Updated:   December 16, 2021
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
@@ -52,7 +52,7 @@ Param (
 )
 
 # // Build command syntax
-$Command = $ScriptLocation + ' -InternalIPv6Prefix ' + $InternalIPv6Prefix
+$Command = '-ExecutionPolicy Bypass -File ' + $ScriptLocation + ' -InternalIPv6Prefix ' + $InternalIPv6Prefix
 
 If ($InternalInterface) {
 
@@ -73,8 +73,8 @@ Register-ScheduledTask -TaskName 'Reset ISATAP Interface' -User $User -Action $A
 # SIG # Begin signature block
 # MIIdWQYJKoZIhvcNAQcCoIIdSjCCHUYCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU5dMgO/9r2jKPkauVFJ74pgQV
-# h2qgghfxMIIE/jCCA+agAwIBAgIQDUJK4L46iP9gQCHOFADw3TANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUnJNHLFZf5JMq+xUCPW4WmtWu
+# GJmgghfxMIIE/jCCA+agAwIBAgIQDUJK4L46iP9gQCHOFADw3TANBgkqhkiG9w0B
 # AQsFADByMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMTEwLwYDVQQDEyhEaWdpQ2VydCBTSEEyIEFz
 # c3VyZWQgSUQgVGltZXN0YW1waW5nIENBMB4XDTIxMDEwMTAwMDAwMFoXDTMxMDEw
@@ -207,25 +207,25 @@ Register-ScheduledTask -TaskName 'Reset ISATAP Interface' -User $User -Action $A
 # U0hBMzg0IDIwMjEgQ0ExAhABZnISBJVCuLLqeeLTB6xEMAkGBSsOAwIaBQCgeDAY
 # BgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3
 # AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEW
-# BBTRS2N1ALblJ1/0F8bvb7y7uuOCFDANBgkqhkiG9w0BAQEFAASCAYBqU9t3nZrp
-# jMbmDIOQFk4jv8Y3Kos51BdfDcO2UAGWFZ38Ipru6rjH55uikh0Mz1pqjTWpOtRj
-# keFhky/XE84HX5CVs4z0tQO5H+YrL5vl9h4T5X29H3jtwrclMqG2P0h9AE+YBCiO
-# qKFE9XMAGKQDP/IUZjIHp2N13jYX30rIEOV9z86TlmHFvLiFD41Bs7U1qxU/1/h3
-# WD7/AFDy3bD62V5qPdZOFxqXBLLRylb9440tbEI3pjsFmeg1C0JtU6atSHC+tGvT
-# Er8W8ocU80qLvRizF+IKYlQHJ1pdx97fj/PmzaPQvSIF+WIKk2Z1yIKhL2zOWOnX
-# j8j8MZj4qH3Bt1hXlpWAiN1b66LFdYF9jHGJuaK4zQFXRji//avVKxesJ5JVk7Oi
-# b1fD2icH642jBM2EzrrsvRg0LhQvPzerewYc4cDZwaQhzvAwk2ZjnE2jar76QaFU
-# VDrwMj3ahF2SgspdQ3YAqC9S3LpCZEgO8O08Y1GHQeNkm2xtlztaCG2hggIwMIIC
+# BBRZ2MdhZ5TeLDOiKO/9Z9QWz7QHtjANBgkqhkiG9w0BAQEFAASCAYCmaKHyRLkT
+# S6MDTOYVvDBSt1MbBBInfs0imaWW4yOCLTKEVYwWqfGmh9awH8sAyDujTWn2/9nc
+# jLM/N6cmvYWp7CdXFZuWLEr9ijrhZEGzCZ008FfVKqudZ/ssY6tRuNnDRlyfFTZ4
+# L3bqbMJEuFl0rkqjgeC28kJzcM47eozhQsfAOsMZ2i36clGZYcPz/vxQedFhzXkH
+# yWIey408513mgJXSodKPpGqclF+JbmfxIhghQXq/PaZrpZTIkGqZo59vTUAgcxpq
+# zJRpaGPMaUPd8hncv2BK6jLeKz63jCTMMuUyByuWQqufy9TB+uXLs9LTQHVpsrKs
+# eUNYesX6kXsjTNxl+e0sxbC2NrnEQscsHwNgka0zZu7466UkA+eiaGL0f4TeWfJY
+# QWoyvJF63v8TayXbn5iEqkGj+ZXmKT1gwQVT5VW7pER/JOA9+czMgAsVh4nkUtH0
+# xSI52x+ihrxJ+eF0SPAOOTkFduLIXQuGauKSOoKeNQbfPvIGEMJ7rgChggIwMIIC
 # LAYJKoZIhvcNAQkGMYICHTCCAhkCAQEwgYYwcjELMAkGA1UEBhMCVVMxFTATBgNV
 # BAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTExMC8G
 # A1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIFRpbWVzdGFtcGluZyBDQQIQ
 # DUJK4L46iP9gQCHOFADw3TANBglghkgBZQMEAgEFAKBpMBgGCSqGSIb3DQEJAzEL
-# BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMTIxNDE4MTYwMFowLwYJKoZI
-# hvcNAQkEMSIEIDtk20CAHGt7HVuHZHypNGYVfjB8RnwPzp+jQsF7C9T6MA0GCSqG
-# SIb3DQEBAQUABIIBAIAv7/xBgBaS40xgdgfgSZGE8dT+r2BSLygydO7oYUD2J6w2
-# XhxsfkDRs6WlXsNEwwlKDgLMch+uC0tZ+jStVwn4zsOPiP1qf12Zu691InTXKaC/
-# gUtVEMPzqhbNnhzvwlVcuU/WCvyS6U9YTxq9ujeeSNotjlblPMOEw+8Ieqc3ofD+
-# f3TeEBUNg+lIeEk+hX/Ld3/9w9x53+daCRkfOr7cmZqDR+cOwv0j29WAEXah8Tkn
-# FWJwvAM0JT3OCAvKjI/FPYNM/7lmEF+HpSCZyxaDzpdO8jhpW+gRSfDW31kCxXij
-# 7GDNjAJUBI3IY9oS2czJDHvppFo0OcsFqu3GFpY=
+# BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMTIxNjIwMjgzNlowLwYJKoZI
+# hvcNAQkEMSIEIBRWHCj0xW9VU1pP6jwSByAfvh+JNsRy1x5LGjNsUlxUMA0GCSqG
+# SIb3DQEBAQUABIIBADEDy3XnKbi+zeubH59T1XzAMG9rGJLFcDMteOdxAFNWieWp
+# 0W9vbSAr5Ougn+c4pJwbfwULPXLLuQ87gqzuOQuqIjAyDBdXf9M1Etgg/sVUZwxh
+# XEpp44CzAyHQMVb8tM94tmBsNkTu/+ntutIqrGR4ZPAzfRU6JOrv7Hlt7mnTybIT
+# j3OK28J0zCmag1aeAzRgy33AET2pTjcVApRaoe4tRXnU4WOfE3dOkEpwDXMNpl6j
+# 6YksckEo1yZ8ome60VFhsZ7+pZM+7s3zeDekmyTNpqmskdDmV5AtwZ5y+kpejbBd
+# dVhg98DwGZbWcNqbbFQ4P/naKcGYZu1HqzSHvkg=
 # SIG # End signature block
