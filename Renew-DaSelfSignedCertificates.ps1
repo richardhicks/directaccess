@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 3.0
+.VERSION 3.0.2
 
 .GUID 845d1b0e-5a06-4974-9fad-1bb1b122c1ab
 
@@ -10,18 +10,20 @@
 
 .COPYRIGHT Copyright (C) 2023 Richard M. Hicks Consulting, Inc. All Rights Reserved.
 
-.TAGS DirectAccess
+.LICENSE Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 .LICENSEURI https://github.com/richardhicks/directaccess/blob/master/LICENSE
 
 .PROJECTURI https://github.com/richardhicks/directaccess/blob/master/Renew-DaSelfSignedCertificates.ps1
+
+.TAGS DirectAccess
 
 #>
 
 <#
 
 .SYNOPSIS
-    PowerShell script to renew DirectAccess self-signed certificates.
+    Renew DirectAccess self-signed certificates.
 
 .PARAMETER Iphttps
     Renew the DirectAccess IP-HTTPS self-signed certificate.
@@ -70,9 +72,9 @@
     https://directaccess.richardhicks.com/2012/11/28/windows-server-2012-directaccess-simplified-deployment-limitations/
 
 .NOTES
-    Version:        3.0
+    Version:        3.0.2
     Creation Date:  July 14, 2019
-    Last Updated:   December 8, 2023
+    Last Updated:   December 12, 2023
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
@@ -136,7 +138,6 @@ If ($IpHttps -or $All) {
         Write-Warning 'IPHTTPS certificate is not self-signed. Renew the IPHTTPS certificate with the certificate issuer manually.'
 
     }
-
 
 } # iphttpscert
 
@@ -247,8 +248,8 @@ If ($Radius -or $All) {
 # SIG # Begin signature block
 # MIInGwYJKoZIhvcNAQcCoIInDDCCJwgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUXBSdC5iJygfFzSezFT4upVXA
-# VieggiDDMIIFjTCCBHWgAwIBAgIQDpsYjvnQLefv21DiCEAYWjANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUNvVq2DFkqUbDJiOZ2Z2yOYRx
+# OquggiDDMIIFjTCCBHWgAwIBAgIQDpsYjvnQLefv21DiCEAYWjANBgkqhkiG9w0B
 # AQwFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMjIwODAxMDAwMDAwWhcNMzExMTA5MjM1OTU5WjBiMQsw
@@ -428,30 +429,30 @@ If ($Radius -or $All) {
 # NiBTSEEzODQgMjAyMSBDQTECEAFmchIElUK4sup54tMHrEQwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFBOhdKfFyPuRU1McRoFk9m6NIH9EMA0GCSqGSIb3DQEBAQUABIIBgJnzETYD
-# lUwTg6odsBWN5XGChhKnfjPHK1GK/ZI4nAy2Nrac8gw9CL0cPbIlJSSdi6Q4eKpt
-# qSS769nSeQ7uH63Hl9x7HTSApZ5Wj5NjdmFV3ys3BiESEbisveFZOcvgJKmwSu5b
-# WPLT8LDaA0eeAKFOwAPFhv4NSDh8eU9u6/Z5yHKSsf6KaRyD48+MT3zbPR2w1IZ3
-# AlZ48ejjdx2/422Bp5NzW6zFz38p2OaIuX/QIE25vzmZlwf8gIeXh/YZUWgc3ADm
-# mrLMqqMeOTWnu77F6IoZDnmAOL05r9qI0aqPlfcvl9qIik7zwVQfIkYhT79oBSVg
-# vKoyh6Gb6xThFddFZZHWnjcCI0tyQGkVOuky8RbRourN35C1TOxEDq0UctPSBNcs
-# t4E/5e5fHVRefW1/SEcJvhOlqWtzzBZ0tWgUl5iasKYVpltgrXZp9riBWGL+J1Zu
-# UlnI5TWjYGr4Pqn3RqNKQonVOqxkN206UssKK7ljABsLjda+0Z8GokHKQ6GCAyAw
+# MRYEFOvJ/nhsOMjEZYdpzazQ482y0mbfMA0GCSqGSIb3DQEBAQUABIIBgKocqyRI
+# ni0vTQ9nBn+M8AqcJ3AHUC9fVNK4nSBCZvnpN5GSdh3Daq23jJ8hu0yR8fd9NbTE
+# y+XLBVZ7y8U2BeHU2NM32rS1K9PeLaJtnU5fmfsqJZYs9gtrYfY2D9iHFA+O5NfM
+# oFBM3Xnd14T8rf0PHaGgpSFMwybtypMcC4XXPjvdn+frIigcxcRSK7Fq5XlS4pbi
+# NnW+1goOp1QThQXYD3OjbAieTBJztjcbHZtA1MBjN8XoqIYkDUU7XfLFGETxOFJH
+# UjrPXyStuP2O+nqAIey+ptxnCrDz4weN3ibVdsnOCIN3SICh+LQ4uQLQColYBdgU
+# uaiChPvxWWwxM09r0vJJcDOnRO/p/BYIfJsbfsHRm6c26vz4RslVL901DqozARSY
+# Xv0PxC4tapqRB5DC4Tu2aWOBxKMWLyFnRp+1ihh8ttQbXZbF3Nm6K89oLHLqU0C0
+# yBQHlQ17VxnT56g7Lny28iaJvZ7ulaiOhV9Chp6oCiZi4JR4k+aryBcp7aGCAyAw
 # ggMcBgkqhkiG9w0BCQYxggMNMIIDCQIBATB3MGMxCzAJBgNVBAYTAlVTMRcwFQYD
 # VQQKEw5EaWdpQ2VydCwgSW5jLjE7MDkGA1UEAxMyRGlnaUNlcnQgVHJ1c3RlZCBH
 # NCBSU0E0MDk2IFNIQTI1NiBUaW1lU3RhbXBpbmcgQ0ECEAVEr/OUnQg5pr/bP1/l
 # YRYwDQYJYIZIAWUDBAIBBQCgaTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
-# CSqGSIb3DQEJBTEPFw0yMzEyMDkwMTU0MDNaMC8GCSqGSIb3DQEJBDEiBCChJ+kL
-# 76w6vLAq8Dl9/JSkRzm4J1sPZ+j0WHLKLkyStTANBgkqhkiG9w0BAQEFAASCAgCb
-# +1s06NS9fHk1EKaKbKU37syF+A37VhpYO4CwhTKjcvLOoefXs0855tPOU8o9xhmi
-# BE9fIZlQzC7lFeVCYDW5T/3DnYlmI2MM4Qb86cjidzi7HJ5elYlITZbAk0w89Tk0
-# PtpbHavm+fHsoLDMQniSuNvsQa+uPJPfqNUFEX2vZ9wx1bRtHb+5TiJO2kAvdqlG
-# qn7laY09gyFZBQc0leROsV4qrQA7LSvbuymhHUAJ2VYZYQ/Xaib31c5HMidemVwG
-# 0tlAWKEnJDtsKzoy2vUAY+mUrO53WLNM6MWtJFtAy0AZ0L2rMr+zlXJ7c6OMzdK6
-# LLKhIOsePCnpAVjFwT9q/pqtYKvHTbGudBmG3Bpr413WMnljKPleOM81gqs9f2Fp
-# OsoJAvjXKyjyl+CdcA6IacSlVU5MU670Q1FqFlzxLuEst87Xb7RBRnit/oPpO+fG
-# VycCZ8dKanNa2A9yxPZiT3semR545q4ZVpBVon5e0PhYSD4W1QPbBi4h1Gvcn6Lr
-# HWuNagVzETalKecNkBnZK0EZajJUzsxRRQwQYKail9SGmGQV6kKJZc46opfQchcu
-# c855gBZ7EoGPUI79NlksmrM4X+DiMXkfJdagO1suIPf7YdwJpBHHpMWa/nHonHkQ
-# 26D2zni8n/CDrjupGro0J7mmoUib+7nx+lzSzcbsJQ==
+# CSqGSIb3DQEJBTEPFw0yMzEyMTIxNzQyMzRaMC8GCSqGSIb3DQEJBDEiBCBRJFYw
+# jYN99itmjCGUm6Mb8LhAh2U1Wll4oS4cm+dAzzANBgkqhkiG9w0BAQEFAASCAgB4
+# zw1zks+3Bb/zsA+LsU6svJRFd2POfug7U0QTy05e72fBEWEHsUvI8GlKOTMPVLnp
+# jw2xsaaPaA1V2CG4aT/MMQR2CznvNFyVnUrBg1i/1WxXYwDbljdBjaVY/UcJ8BBA
+# m/sE5iHO5d5sTBaLRO50Y47mW9udL1zw/PWDjGurWI09prKrMegKxMmJCijhDskI
+# 4OQl7nWY2vVBtoICvvn78s4r14LPat2FdXm7zAk0cyX462Hb+wqgqf+EuY5fjekx
+# IVECR4H9UR9aYfLb703Mcu3UZXP/8eCp0NgFQiGpzr08VhV/QvJNl64rC59Kt4DP
+# K5Eg1viiCSCGFaXY+9osJYD+aEizN/jhgpj4cC4oTpg6FeSD7ygUA4eN+FngF7Ny
+# YP5PQVufAL18ZeOGu0kVC4PCUTOu2/GPtAHTPzoqcfkx9AC07c3fXRg58eALZqw9
+# IXMMP26o/v8KLeRMHXYAvonFGkilreBVcisdiC0wSN47xKEkMhv9hlxnC/nqk53u
+# 3q1iyblP7nV+X9tJ/SkvUSl9W0cs6gq+WASaQPijM2yyWq0KcvEE7faqAUbgitxg
+# 2Rg0qXEwXFNOnWNvZloP+8E2StVh40ACbpHKIL3rPa6VwXSsys1A8IpPuOdK0YpW
+# epZbBh363d+pA8DaKTOhu6Mzqusi/J76EEZmJS3aVw==
 # SIG # End signature block
