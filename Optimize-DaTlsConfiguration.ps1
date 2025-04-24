@@ -26,9 +26,9 @@
     https://directaccess.richardhicks.com/
 
 .NOTES
-    Version:        2.0
+    Version:        2.0.1
     Creation Date:  September 14, 2020
-    Last Updated:   April 22, 2024
+    Last Updated:   April 24, 2024
     Author:         Richard Hicks
     Organization:   Richard M. Hicks Consulting, Inc.
     Contact:        rich@richardhicks.com
@@ -122,13 +122,13 @@ $Parameters = @{
 
 # Update registry settings
 Write-Verbose 'Updating TLS cipher suite configuration...'
-New-ItemProperty @Parameters -Force | Out-Null
+[void](New-ItemProperty @Parameters -Force)
 
 # Disable SSL 3.0
 Write-Verbose 'Disabling SSL 3.0...'
 
 # Create registry key
-New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server\' -Force | Out-Null
+[void](New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server\' -Force)
 
 # Define registry parameters
 $Parameters = @{
@@ -142,13 +142,13 @@ $Parameters = @{
 }
 
 # Update registry settings
-New-ItemProperty @Parameters -Force | Out-Null
+[void](New-ItemProperty @Parameters -Force)
 
 # Disable TLS 1.0
 Write-Verbose 'Disabling TLS 1.0...'
 
 # Create registry key
-New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server\' -Force | Out-Null
+[void](New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server\' -Force)
 
 # Define registry parameters
 $Parameters = @{
@@ -162,13 +162,13 @@ $Parameters = @{
 }
 
 # Update registry settings
-New-ItemProperty @Parameters -Force | Out-Null
+[void](New-ItemProperty @Parameters -Force)
 
 # Disable TLS 1.1
 Write-Verbose 'Disabling TLS 1.1...'
 
 # Create registry key
-New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server\' -Force | Out-Null
+[void](New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server\' -Force)
 
 # Define registry parameters
 $Parameters = @{
@@ -182,7 +182,7 @@ $Parameters = @{
 }
 
 # Update registry settings
-New-ItemProperty @Parameters -Force | Out-Null
+[void](New-ItemProperty @Parameters -Force)
 
 # Complete transaction
 Write-Verbose 'Committing registry transaction...'
@@ -193,8 +193,8 @@ Write-Warning 'The server must be restarted for these changes to take effect. Af
 # SIG # Begin signature block
 # MIIfngYJKoZIhvcNAQcCoIIfjzCCH4sCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAnEybxv8Ofhoqf
-# 0GiPr5xDFDw6k/bRju1jby9ETgapR6CCGmIwggNZMIIC36ADAgECAhAPuKdAuRWN
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCB138UY1cAjorGp
+# IDKUWXyoh3ql+wkjAiAJqu9r1LXvdaCCGmIwggNZMIIC36ADAgECAhAPuKdAuRWN
 # A1FDvFnZ8EApMAoGCCqGSM49BAMDMGExCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxE
 # aWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xIDAeBgNVBAMT
 # F0RpZ2lDZXJ0IEdsb2JhbCBSb290IEczMB4XDTIxMDQyOTAwMDAwMFoXDTM2MDQy
@@ -340,24 +340,24 @@ Write-Warning 'The server must be restarted for these changes to take effect. Af
 # b2RlIFNpZ25pbmcgRUNDIFNIQTM4NCAyMDIxIENBMQIQDUo02oaQj8ATLLyBN5Ov
 # JDANBglghkgBZQMEAgEFAKCBhDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkG
 # CSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEE
-# AYI3AgEVMC8GCSqGSIb3DQEJBDEiBCAjNyNdcwX0gDpeWngbhLLKQ3PA2iqwg/yl
-# aM7Ekfw55jALBgcqhkjOPQIBBQAESDBGAiEA8fVw0N8GGRBwuXopSc6AH3nlDa+7
-# RmsEUOqlYrTHFwMCIQDu+wFoeg58+mwBcR7a0/2uaXtFAQIQjjcA/YlK3AHBbqGC
+# AYI3AgEVMC8GCSqGSIb3DQEJBDEiBCBmSmcipfhziQk/v214sv1m0PZ5/0pX1Fvs
+# 29mCAv48gTALBgcqhkjOPQIBBQAESDBGAiEA3+hO9/Xo2UN+QQOmsIsyZBnaYfBR
+# O4IBK36rV6O4LBICIQCdB71CfY54c5nautRCsny/SzbUkZxcf0l2wP3bE3N7Q6GC
 # AyAwggMcBgkqhkiG9w0BCQYxggMNMIIDCQIBATB3MGMxCzAJBgNVBAYTAlVTMRcw
 # FQYDVQQKEw5EaWdpQ2VydCwgSW5jLjE7MDkGA1UEAxMyRGlnaUNlcnQgVHJ1c3Rl
 # ZCBHNCBSU0E0MDk2IFNIQTI1NiBUaW1lU3RhbXBpbmcgQ0ECEAuuZrxaun+Vh8b5
 # 6QTjMwQwDQYJYIZIAWUDBAIBBQCgaTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-# MBwGCSqGSIb3DQEJBTEPFw0yNTA0MjIxOTQ3MzVaMC8GCSqGSIb3DQEJBDEiBCCs
-# 6HuJKyr2rk5ZVI85RGi/p/DvEbNB2JTsOBYViYG4fzANBgkqhkiG9w0BAQEFAASC
-# AgBz8CI3C+53P8A2dRVKKqwyAJNVotTdR9mjdOHbjYyPy8j7V3+NcPUspoPhdxvi
-# aw4oExDWNHfvLCTF7xKml5dAO+2owG405s1Xm2+u5kjw/y9G/tjkvAzC8/970i3d
-# Mu04+CWIADRmMHLH0yWDF7bs7pMZ7oUdv24I3aMEGGUuJ6zcbIYvrIQfKwovZUrL
-# vY7vPPB9PheokHrQumpyOPDWbNGPvguyNX06YnMLmFzYP440zvvS+tzsm8vsFcSd
-# lyJ2KvhrLoG2U5ipUbYDx+VpgD4hb0NTWs/T3TTxQfYsFO2Z4TE2uCU9Xt+9+LMp
-# DzFUWWc8Tb94Wk5NnFN6srvHQ1c24xQQq9nthPo3sgkCtzpXldBSGM9DE9SkZPGd
-# NiwGo/y2h5dP/CWtfAWSgWfe7cxXU8CKuQXBJAm8DhkdjmdQbr2KC611qWFbL+9C
-# 3jn4M8CSUk1kysXQ3SybCHYN2js8CjKTlgjuwIapeUCAgvqoLwUt1uGASMkHIoXo
-# kDUAF0W7x85HcyIoRKEOwIMfcFWPk+/mRakYRqsVsd6xTJfO44OZjN5xU1wvfpCw
-# 10prqzZThbVyaL6fZxabkI7l3+XJqcFRLewyO2bpdjPYkn7CUmICydpBSztyhha5
-# rFesaWI93nf0Y+uG9fLBtteA+Zl9yKSlOJ+Az6V+QR4KHw==
+# MBwGCSqGSIb3DQEJBTEPFw0yNTA0MjQxNzQ0NDVaMC8GCSqGSIb3DQEJBDEiBCC+
+# C3xptBdlRJM/LJQth3gAz869Y9RM6lLTZXXWH2acgTANBgkqhkiG9w0BAQEFAASC
+# AgC8W/xSPHDkd0SCXv+MhlsokwTKp1BRMH56RhURG/DMzIidNUrTRD2rGgtpo3ON
+# inYsKmlOQNYfIpUsKnD9Xv/X1V49BBbDlx0sISWeOwhC5RkN9H/m/dIju1aMPCp0
+# DGR6ouJmCWnG101SFYiGZ0rLE7PVeqXX91LL+LzbgsTTFVDVIkNvAAN0mLWbsf0T
+# hGntErgd5puIiTFtniLDANOR8qOO89JJetMOVEuRfFISLgzc+5rBcmCJjZNGecYo
+# nh0lK3Ilk9FR6nl4C6W3y+RQ9W9hYAd5Qfy4mEeVJ78YGRUMtjXxiKUdaM3bmEtG
+# ObNvaFhGCNNZdJ/1CbQLiJvuT8GSO9zY9eS70VS0uN1SmkiJoJqMp4ZstL8YWDGq
+# fwMIC0o7YSylbKlzVNP0up81RfKbYdF0XwAQsYTz5o9H8vXgDYKEekRkFpW98j1w
+# TPE4/yMUsfe7l1Tofhzo6b16NHEN5lIYN2GTu0Fy0Al1UXkqJWNc+hmpTFK9Mol3
+# tr6wsWU0lOokWxl4a/psCCcnUfbbu8rNpa79hXQZwEsr6v5mDC6tEWWsyaKjfbVp
+# GpTg1mGy5i1Em9ByhpVs8qX4A2o6y6+2hH31kraSTtrqOsoUSNQxWPuz5pwoEIfN
+# OBM2WYspAw9HvH+vQADokVyQxsXyfcvEBy660YiKToeiyQ==
 # SIG # End signature block
