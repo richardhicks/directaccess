@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0
+.VERSION 1.1
 
 .GUID 4310a537-3e45-4f07-bbd9-be8bd0e0c6eb
 
@@ -82,7 +82,7 @@
     https://www.richardhicks.com/
 
 .NOTES
-    Version:        1.0
+    Version:        1.1
     Creation Date:  March 7, 2026
     Last Updated:   March 7, 2026
     Author:         Richard Hicks
@@ -243,7 +243,7 @@ ForEach ($GpoEntry in $GpoList) {
 
             Try {
 
-                Set-GPPermission -Guid $Gpo.Id -Domain $DomainPart -TargetName $Sam -TargetType $TargetType -PermissionLevel GpoEditDeleteModifySecurity -ErrorAction Stop | Out-Null
+                [void](Set-GPPermission -Guid $Gpo.Id -Domain $DomainPart -TargetName $Sam -TargetType $TargetType -PermissionLevel GpoEditDeleteModifySecurity -ErrorAction Stop)
                 Write-Information "Granted 'Edit settings, delete, modify security' to '$Sam' on GPO '$GpoName'." -InformationAction Continue
 
             }
@@ -430,7 +430,7 @@ public class LsaApi
 
             Finally {
 
-                [LsaApi]::LsaClose($policyHandle) | Out-Null
+                [void]([LsaApi]::LsaClose($policyHandle))
 
             }
 
@@ -460,98 +460,125 @@ public class LsaApi
 
 }
 
-# Update service credentials
-Write-Verbose "Stopping certkit-agent service..."
+# Check current service logon account before making changes
+Write-Verbose "Checking current certkit-agent service logon account..."
 
 Try {
 
-    Stop-Service -Name certkit-agent -Force -ErrorAction Stop
-    Write-Verbose 'certkit-agent service stopped successfully.'
+    $CurrentSvc = Get-CimInstance Win32_Service -Filter "Name='certkit-agent'" -ErrorAction Stop
 
 }
 
 Catch {
 
-    Write-Warning "Failed to stop the certkit-agent service. $($_.Exception.Message)"
+    Write-Warning "Failed to query certkit-agent service configuration. $($_.Exception.Message)"
+    $CurrentSvc = $null
 
 }
 
-# Configure certkit-agent to run under the service account
-If ($IsGmsa) {
+If ($CurrentSvc -and $CurrentSvc.StartName -ieq $AccountName) {
 
-    Write-Verbose "Configuring certkit-agent to run as gMSA '$AccountName'..."
-    & sc.exe config certkit-agent obj= $AccountName
+    Write-Verbose "certkit-agent is already configured to run as '$AccountName'. Skipping service update."
+    Write-Information "Configuration complete. '$AccountName' is already configured to run the certkit-agent service." -InformationAction Continue
 
 }
 
 Else {
 
-    $Credentials = Get-Credential -UserName $AccountName -Message "Enter the service account password for certkit-agent."
+    # Update service credentials
+    Write-Verbose "Stopping certkit-agent service..."
 
-    $BSTR = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credentials.Password)
-    $plainPw = [Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+    Try {
 
-    Write-Verbose "Configuring certkit-agent to run as '$AccountName'..."
-    & sc.exe config certkit-agent obj= $AccountName password= $plainPw
+        Stop-Service -Name certkit-agent -Force -ErrorAction Stop
+        Write-Verbose 'certkit-agent service stopped successfully.'
 
-    $plainPw = $null
+    }
 
-}
+    Catch {
 
-If ($LASTEXITCODE -ne 0) {
+        Write-Warning "Failed to stop the certkit-agent service. $($_.Exception.Message)"
 
-    Write-Warning "sc.exe config returned exit code $LASTEXITCODE. Service credentials may not have been updated."
+    }
 
-}
+    # Configure certkit-agent to run under the service account
+    If ($IsGmsa) {
 
-# Validate service configuration
-Try {
-
-    $Svc = Get-CimInstance Win32_Service -Filter "Name='certkit-agent'"
-
-    If ($Svc.StartName -ne $AccountName) {
-
-        Write-Warning "Service StartName is '$($Svc.StartName)' but expected '$AccountName'. Credentials may not have applied."
+        Write-Verbose "Configuring certkit-agent to run as gMSA '$AccountName'..."
+        & sc.exe config certkit-agent obj= $AccountName
 
     }
 
     Else {
 
-        Write-Verbose "Service StartName successfully updated to '$AccountName'."
+        $Credentials = Get-Credential -UserName $AccountName -Message "Enter the service account password for certkit-agent."
+
+        $BSTR = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credentials.Password)
+        $plainPw = [Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+        [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+
+        Write-Verbose "Configuring certkit-agent to run as '$AccountName'..."
+        & sc.exe config certkit-agent obj= $AccountName password= $plainPw
+
+        $plainPw = $null
 
     }
 
+    If ($LASTEXITCODE -ne 0) {
+
+        Write-Warning "sc.exe config returned exit code $LASTEXITCODE. Service credentials may not have been updated."
+
+    }
+
+    # Validate service configuration
+    Try {
+
+        $Svc = Get-CimInstance Win32_Service -Filter "Name='certkit-agent'"
+
+        If ($Svc.StartName -ne $AccountName) {
+
+            Write-Warning "Service StartName is '$($Svc.StartName)' but expected '$AccountName'. Credentials may not have applied."
+
+        }
+
+        Else {
+
+            Write-Verbose "Service StartName successfully updated to '$AccountName'."
+
+        }
+
+    }
+
+    Catch {
+
+        Write-Warning "Failed to validate service configuration. $($_.Exception.Message)"
+
+    }
+
+    Write-Verbose "Starting certkit-agent service..."
+
+    Try {
+
+        Start-Service -Name certkit-agent -ErrorAction Stop
+        Write-Verbose "certkit-agent service started successfully."
+
+    }
+
+    Catch {
+
+        Write-Warning "Failed to start the certkit-agent service. $($_.Exception.Message)"
+
+    }
+
+    Write-Information "Configuration complete. '$AccountName' is configured to run the certkit-agent service." -InformationAction Continue
+
 }
-
-Catch {
-
-    Write-Warning "Failed to validate service configuration. $($_.Exception.Message)"
-
-}
-
-Write-Verbose "Starting certkit-agent service..."
-
-Try {
-
-    Start-Service -Name certkit-agent -ErrorAction Stop
-    Write-Verbose "certkit-agent service started successfully."
-
-}
-
-Catch {
-
-    Write-Warning "Failed to start the certkit-agent service. $($_.Exception.Message)"
-
-}
-
-Write-Information "Configuration complete. '$AccountName' is configured to run the certkit-agent service." -InformationAction Continue
 
 # SIG # Begin signature block
 # MIIf2wYJKoZIhvcNAQcCoIIfzDCCH8gCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDnElcFVv6DMcsK
-# e/ej3ajVSKeBEzn+uYcdEtA89B8SiaCCGpkwggNZMIIC36ADAgECAhAPuKdAuRWN
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBZgVJ6ddQWHGlO
+# 3Fu6hV3Y5uli7Uok7Wk6nc7vSPa1Q6CCGpkwggNZMIIC36ADAgECAhAPuKdAuRWN
 # A1FDvFnZ8EApMAoGCCqGSM49BAMDMGExCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxE
 # aWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xIDAeBgNVBAMT
 # F0RpZ2lDZXJ0IEdsb2JhbCBSb290IEczMB4XDTIxMDQyOTAwMDAwMFoXDTM2MDQy
@@ -698,24 +725,24 @@ Write-Information "Configuration complete. '$AccountName' is configured to run t
 # YWwgRzMgQ29kZSBTaWduaW5nIEVDQyBTSEEzODQgMjAyMSBDQTECEA1KNNqGkI/A
 # Eyy8gTeTryQwDQYJYIZIAWUDBAIBBQCggYQwGAYKKwYBBAGCNwIBDDEKMAigAoAA
 # oQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4w
-# DAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgfaUAPSjDSennxKnXa/oiOfJ0
-# 68q33a6dFpF4TJAKDL0wCwYHKoZIzj0CAQUABEgwRgIhAKGdTFpT32dJYX/sSx1X
-# 9W/fM4W4N9P82OMxSZABAaKtAiEA9k5IOIjwZ40MMM7b1609/IoeLK54Zx9Bc+Q5
-# deQFp82hggMmMIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQG
+# DAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg3VfjGpX0lQpHXXy/zg2BHZS1
+# ZkcjTZAYy8FqWLw4lk4wCwYHKoZIzj0CAQUABEgwRgIhAP+e/aVN0cOleZjR8T7D
+# ZgsyKOPoVJMuSMCzvFvzyfFtAiEAprAv2milad2m+fzpJbYEA2sqvFELVenIYyPF
+# 3cwogT2hggMmMIIDIgYJKoZIhvcNAQkGMYIDEzCCAw8CAQEwfTBpMQswCQYDVQQG
 # EwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xQTA/BgNVBAMTOERpZ2lDZXJ0
 # IFRydXN0ZWQgRzQgVGltZVN0YW1waW5nIFJTQTQwOTYgU0hBMjU2IDIwMjUgQ0Ex
 # AhAKgO8YS43xBYLRxHanlXRoMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZIhvcNAQkD
-# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMzA3MjE1NTA0WjAvBgkq
-# hkiG9w0BCQQxIgQgqHS5bvi4iskC9TashcO06FDX6rJEgcPEGmPXL4esMGIwDQYJ
-# KoZIhvcNAQEBBQAEggIAOwLu/LH/gP5n8wfo+quB8ZjKJt+nQADMf8TbccRYVtZO
-# FxJz4Ok76C+GBZ023o2oXQWkezvAgpONY/KQuRlDF5TxMTG9u/65nhoH3d0NAaku
-# O8lUC45rf7XrMFWATMnvyrkMAVkkfviiR9e+w9jnpbcWvCyZ0tqHS2/ypv1yO7Pq
-# d1hUT1imYWmIEeoPFlt+Y9K6zGon689kgVlZRwo0bINddRUP3rHu3Qn2R/7bB8Vn
-# iEpaTXkWwGuBY4Y7E6kOH/WW4SKqH7GF7V69viiuvckKcXFNc7xV2ME/YyqYWby3
-# cnzaibGBjwFLIhHaGnWg9fZ1gfRwrgWp8Zx4oNMFaqOS3mMzeFgrdnxnj3FfkZst
-# ttT3IfHcywdGrrilG8F3uswNOm7V+ToOf1JIusutHL0ZLN1Bvg35NfAKy23rVR46
-# NT7QHh9M2ynCAg2C/QicFHbbi+WBuYTWyH9i10M2EppiNLnO2w2h/deMvwjjLkrt
-# ZutSR1RHLC9J5lss/vPDLHtLVBHRCHT5al1uwJcPzMzA5JOzSYYS6/dFmyFANXPr
-# 45ggk+7ifDgXz1CzqLlkjVxGHyAm5euWzPaDMZGCsRxh+tj58s59i0xB8LkwY6y1
-# KXff/GSWhtQjbDZr0E61zE4x41RwZHoHXayiXyFt2pvQSr/jqI4JfXUccVI9ixo=
+# MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjYwMzA4MDE0MjU3WjAvBgkq
+# hkiG9w0BCQQxIgQgsqB+OUIFPr5RIGvpB3B/Co82UT3xRFE0Guz5usOOnL4wDQYJ
+# KoZIhvcNAQEBBQAEggIAjRAoDIS8syKCsTHmLpVUHsL+v8/AuTdfS7qsIqQiM3M8
+# e6upYhCuCw9DyjY0G4dvOX2OYR6+nEEyZVeHhD2hU7Y3C7U2Y6UbQNwE5pSXy7wr
+# K5/W2FPp3IT00K1TnrOoNW0LhooM5ivlr0Yn8zMapfs+uKbYqTCpPV/r4ObrPbvu
+# 7xBDa2gArx0pnN5DNSWi3ux9H3xg/uWcA8io+UMVag6AtfLLdnIz3h/ki1CObFWA
+# b7yRJOQ3KbgdVjJtcfqwEj0g9TZ3FwPH7yEN3jUuGP3u+2phBwrrFrtIDAVA1NpJ
+# o62Bjnbw/ITOA/GQ9B9XfBpwIJCFVgv9NgoAqcQ2428JHurwTQAngV1NZSC/yrm3
+# nIneUdBe5ufaLah1NxWENJRkp5RUV03Zup/N+xs/f6U6qVP9W2o3AU3kIY7wSs/O
+# wMVKH4kMldav1RN8z2p8GvBLlbMIztJ0ShPfLKEWvNE+OmISidn/W8vLgOUFEmPT
+# XL5bEgBuEL43Gy+BT84v/3iveQQ2R6zv2/atMw8pSWEI3+VCNrIzhpUK4FYgW6Qc
+# ts9GEY51MmEXAy/HgapeEBlIU0xmbDk1FtrFCFL9G59eQlt/uEjL4GdBc++CH/7A
+# zzyeKxoqHP2AgPPwV6cNjbM53Sgj/HgyiCfjicEp2Rx6p8nl5WULGnN+myJGSNg=
 # SIG # End signature block
